@@ -17,8 +17,6 @@ namespace tetris
         // vector of row's nomber that must be deleted:
         std::vector<size_t>                     list_rowsToDelete;
         void                                    checkRowsToDelete();
-        void                                    fill_list_countOfFilledPixelInRow();
-        void                                    clear_list_countOfFilledPixelInRow();
 
 
         public:
@@ -38,5 +36,5 @@ namespace tetris
 
 
     };
-    
+
 }

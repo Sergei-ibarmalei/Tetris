@@ -16,25 +16,7 @@ namespace tetris
         }
     }
 
-    void TetrisRoom::fill_list_countOfFilledPixelInRow()
-    {
-        for (size_t atRow = 0; atRow < WORKAREA_ROW; ++atRow)
-        {
-            for (size_t atColumn = 0; atColumn < WORKAREA_COL; ++atColumn)
-            {
-                if (room[atRow * WORKAREA_COL + atColumn].filled) 
-                    list_countOfFilledPixelInRow[atRow] += 1;
-            }
-        }
-    }
 
-    void TetrisRoom::clear_list_countOfFilledPixelInRow()
-    {
-        for (size_t i = 0; i < WORKAREA_ROW; ++i)
-        {
-            list_countOfFilledPixelInRow[i] = 0;
-        }
-    }
 
     void TetrisRoom::FixTetramino(const std::array<Pixel, TETRAMINOLENGTH>& realTetramino)
     {
@@ -45,10 +27,10 @@ namespace tetris
             const auto atPixel  = pixelRow * WORKAREA_COL + pixelCol;
             room[atPixel].filled = pixel.filled;
             room[atPixel].pColor = pixel.pColor;
+
+            list_countOfFilledPixelInRow[pixelRow] += 1;
         }
         filledRoomSize += TETRAMINOLENGTH;
-        clear_list_countOfFilledPixelInRow();
-        fill_list_countOfFilledPixelInRow();
         checkRowsToDelete();
 
     }
@@ -69,10 +51,10 @@ namespace tetris
 
     void TetrisRoom::checkRowsToDelete()
     {
-        for (size_t count = 0; count < WORKAREA_ROW; ++count)
+        for (size_t rowToDelete = 0; rowToDelete < WORKAREA_ROW; ++rowToDelete)
         {
-            if (list_countOfFilledPixelInRow[count] == WORKAREA_COL)
-                list_rowsToDelete.push_back(count);
+            if (list_countOfFilledPixelInRow[rowToDelete] == WORKAREA_COL)
+                list_rowsToDelete.push_back(rowToDelete);
         }
     }
 
@@ -80,11 +62,11 @@ namespace tetris
 
     void TetrisRoom::RemoveFilledRows()
     {
-        size_t time_toDelete;
-        for (time_toDelete = 0; time_toDelete < list_rowsToDelete.size(); ++time_toDelete)
+        size_t indexToDelete;
+        for (indexToDelete= 0; indexToDelete < list_rowsToDelete.size(); ++indexToDelete)
         {
             // get the nomber of row that has to be deleted:
-            auto row_toDelete = list_rowsToDelete[time_toDelete];
+            auto row_toDelete = list_rowsToDelete[indexToDelete];
 
             // delete this row:
             for (size_t column = 0; column < WORKAREA_COL; ++column)
@@ -107,14 +89,23 @@ namespace tetris
                         room[DOWN].filled = true;
                         room[DOWN].pColor = tmpColor;
                         room[AT].filled = false;
+
                     }
                 }
             }
         }
         list_rowsToDelete.clear();
-        clear_list_countOfFilledPixelInRow();
 
-        fill_list_countOfFilledPixelInRow();
+        // here we count the amount of filled pixels in every row
+        // and save it in list_countOfFilledPixelInRow:
+        for (size_t atRow = 0; atRow < WORKAREA_ROW; ++atRow)
+        {
+            list_countOfFilledPixelInRow[atRow] = static_cast<int>(std::count_if(
+                room.begin() + atRow * WORKAREA_COL,
+                room.begin() + (atRow+1) * WORKAREA_COL,
+                [](const Pixel& p) {return p.filled;}
+            ));
+        }
     }
 
 
