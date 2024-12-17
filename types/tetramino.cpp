@@ -193,9 +193,10 @@ namespace tetris
             if (movable)
             {
                 for (auto& pixel: sprite) pixel.row += 1;
-                MakeRealTetramino();
-                RecomputeRealTetraminoRects();
+
             }
+            MakeRealTetramino();
+            RecomputeRealTetraminoRects();
         }
     }
 
@@ -294,7 +295,7 @@ namespace tetris
 
     }
 
-    void GUITetramino::ShowCells(SDL_Renderer *r)
+    /*void GUITetramino::ShowCells(SDL_Renderer *r)
     {
         constexpr Color cellColor(0xa9u, 0xa9u, 0xa9u);
         SDL_SetRenderDrawColor(r, cellColor.red, cellColor.green, cellColor.blue,
@@ -306,7 +307,7 @@ namespace tetris
         }
 
 
-    }
+    }*/
 
     void GUITetramino::makeTetramino(const std::vector<Pixel>& tetramino, size_t shift)
     {

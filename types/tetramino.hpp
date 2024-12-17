@@ -153,7 +153,7 @@ namespace tetris
 
         public:
         GUITetramino();
-        void ShowCells(SDL_Renderer* r);
+        //void ShowCells(SDL_Renderer* r);
         //void MakeTetraminoForShow(const std::vector<Pixel>& t, TetraminoKind kind);
         void MakeTetraminoForShow(TetraminoKind kind);
         void ShowNextTetramino(SDL_Renderer* r);
