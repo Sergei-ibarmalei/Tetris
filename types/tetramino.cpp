@@ -59,37 +59,21 @@ namespace tetris
 
     void Tetramino::checkCrossingBorders(std::vector<Pixel>& turnedSprite)
     {
-        bool leftCrossed {false};
-        bool rightCrossed {false};
         for (const auto& pixel: turnedSprite)
         {
             if (pixel.col < 0)
             {
-                leftCrossed = true;
+                for (auto& pixel: turnedSprite) pixel.col += 1;
                 break;
             } 
             if (pixel.col == WORKAREA_COL) 
             {
-                rightCrossed = true;
+                for (auto& pixel: turnedSprite) pixel.col -= 1;
                 break;
             }
         }
 
-        if (leftCrossed)
-        {
-            for (auto& pixel: turnedSprite)
-            {
-                pixel.col += 1;
-            }
-            return;
-        }
-        if (rightCrossed)
-        {
-            for (auto& pixel: turnedSprite)
-            {
-                pixel.col -= 1;
-            }
-        }
+
     }
 
 

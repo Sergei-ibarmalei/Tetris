@@ -14,9 +14,9 @@ class Timer
 
 
 
-    void start(int seconds) 
+    void start(int milliseconds) 
     {
-        duration = seconds;
+        duration = milliseconds;
         startTime = std::chrono::steady_clock::now();
         isRunning = true;
     }
@@ -30,7 +30,7 @@ class Timer
 
 
         auto currentTime = std::chrono::steady_clock::now();
-        auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(
             currentTime - startTime).count();
 
         if (elapsedTime >= duration) 

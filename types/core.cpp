@@ -20,7 +20,10 @@ namespace tetris
     static std::unique_ptr<TetrisRoom> tetrisRoom;
     static std::unique_ptr<TRandom> tRandom;
     static std::unique_ptr<Timer>   tetrisTimer;
+    static std::unique_ptr<Timer>   freezeBeforeDeleteTimer;
     static bool quitGame;
+    static int  freezeDuration; // duration in milliseconds
+    static int  freezeBeforeDeleteDuration;
 
     bool entry()
     {
@@ -32,6 +35,9 @@ namespace tetris
         tetrisRoom = std::make_unique<TetrisRoom>();
         tRandom = std::make_unique<TRandom>();
         tetrisTimer = std::make_unique<Timer>();
+        freezeBeforeDeleteTimer = std::make_unique<Timer>();
+        freezeDuration = 1000;
+        freezeBeforeDeleteDuration = 200;
         quitGame = false;
 
 
@@ -41,7 +47,7 @@ namespace tetris
     void tetgame()
     {
         makeTetramino(tRandom->GetRandom());
-        tetrisTimer->start(1);
+        tetrisTimer->start(freezeDuration);
 
         while(tetrisRoom->CanWeContinue() && !quitGame)
         {
@@ -52,13 +58,19 @@ namespace tetris
                 currentTetramino.second->Moving(MoveSideDirection::Down,
                     tetrisRoom->GetRoom());
                 tetrisTimer->reset();
-                tetrisTimer->start(1);
+                tetrisTimer->start(freezeDuration);
             }
 
             if (!currentTetramino.second->IsMovable()) fix();
 
             if (!tetrisRoom->List_RowsToDeleteIsEmpty())
             {
+                freezeBeforeDeleteTimer->start(freezeBeforeDeleteDuration);
+                while (!freezeBeforeDeleteTimer->hasElapsed())
+                {
+                    renderLoop();
+                }
+                freezeBeforeDeleteTimer->reset();
                 tetrisRoom->RemoveFilledRows();
             }
             renderLoop();
@@ -77,7 +89,7 @@ namespace tetris
         currentTetramino.second.release();
         tetrisTimer->reset();
         currentTetramino.second = tetraminoStore->MakeRandomTetramino(random);
-        tetrisTimer->start(1);
+        tetrisTimer->start(freezeDuration);
         currentTetramino.first  = currentTetramino.second->Kind();
     }
 
@@ -100,7 +112,7 @@ namespace tetris
         currentTetramino.second.release();
         tetrisTimer->reset();
         makeTetramino(tRandom->GetRandom());
-        tetrisTimer->start(1);
+        tetrisTimer->start(freezeDuration);
     }
 
     void checkKeys(bool& quit)
@@ -148,6 +160,12 @@ namespace tetris
                         {
                             currentTetramino.second->Moving(MoveSideDirection::Right,
                                 tetrisRoom->GetRoom());
+                            break;
+                        }
+                        case SDLK_DOWN:
+                        {
+                            currentTetramino.second->Moving(MoveSideDirection::Down,
+                                tetrisRoom->GetRoom());;
                             break;
                         }
                         default: {}
