@@ -70,6 +70,15 @@ constexpr size_t TETRAMINO_T       {6};
 constexpr size_t ALLTETRAMINOS     {static_cast<size_t>(TetraminoKind::all)};
 
 
+constexpr size_t GUITETRAMINOARRAY_LENGTH {16};
+constexpr int    GUITETRAMINOROOM_SIDE  {4};
+constexpr int    GUITETRAMINOROOM_WIDTH {300};
+constexpr int    GUITETRAMINOCELL_SIDE {GUITETRAMINOROOM_WIDTH / 
+    GUITETRAMINOROOM_SIDE};
+
+
+
+
 
 
 

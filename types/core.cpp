@@ -21,6 +21,7 @@ namespace tetris
     static std::unique_ptr<TRandom> tRandom;
     static std::unique_ptr<Timer>   tetrisTimer;
     static std::unique_ptr<Timer>   freezeBeforeDeleteTimer;
+    static std::unique_ptr<GUITetramino> guiTetramino;
     static bool quitGame;
     static int  freezeDuration; // duration in milliseconds
     static int  freezeBeforeDeleteDuration;
@@ -36,6 +37,8 @@ namespace tetris
         tRandom = std::make_unique<TRandom>();
         tetrisTimer = std::make_unique<Timer>();
         freezeBeforeDeleteTimer = std::make_unique<Timer>();
+        guiTetramino = std::make_unique<GUITetramino>();
+        guiTetramino->MakeTetraminoForShow(createG(), TetraminoKind::G);
         freezeDuration = 1000;
         freezeBeforeDeleteDuration = 200;
         quitGame = false;
@@ -65,12 +68,15 @@ namespace tetris
 
             if (!tetrisRoom->List_RowsToDeleteIsEmpty())
             {
+                // freeze before delete row:
                 freezeBeforeDeleteTimer->start(freezeBeforeDeleteDuration);
                 while (!freezeBeforeDeleteTimer->hasElapsed())
                 {
                     renderLoop();
                 }
                 freezeBeforeDeleteTimer->reset();
+                // stop freeze befor delete row
+                
                 tetrisRoom->RemoveFilledRows();
             }
             renderLoop();
@@ -101,6 +107,7 @@ namespace tetris
             environment->ShowEnv(sdl);
             currentTetramino.second->Show(sdl->Render());
             if (!tetrisRoom->RoomIsEmpty()) tetrisRoom->ShowRoom(sdl->Render());
+            guiTetramino->ShowNextTetramino(sdl->Render());
             SDL_RenderPresent(sdl->Render());       
     }
 

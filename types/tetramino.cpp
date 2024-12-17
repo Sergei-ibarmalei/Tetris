@@ -1,4 +1,5 @@
 #include <cmath>
+#include <algorithm>
 #include "tetramino.hpp"
 #ifdef LOGS
     #include <string>
@@ -253,17 +254,88 @@ namespace tetris
     {
         vStore.reserve(ALLTETRAMINOS);
         vStore.assign({
-            TetraminoPlane(createPlaneV()),
-            TetraminoCube(createCubeV()),
-            TetraminoL(createLV()),
-            TetraminoG(createGV()),
-            TetraminoRight(createRightV()),
-            TetraminoLeft(createLeftV()),
-            TetraminoT(createTV())
+            TetraminoPlane(createPlane()),
+            TetraminoCube(createCube()),
+            TetraminoL(createL()),
+            TetraminoG(createG()),
+            TetraminoRight(createRight()),
+            TetraminoLeft(createLeft()),
+            TetraminoT(createT())
         });
     }
 
 
+
+
+    GUITetramino::GUITetramino()
+    {
+
+        constexpr int guiTetraminoRoom_startX {
+            (LEFTWALL_X  - GUITETRAMINOROOM_WIDTH) / 2
+        };
+        constexpr int guiTetraminoRoom_startY {
+            SCREENCENTER_Y
+        };
+        for (size_t r = 0; r < GUITETRAMINOROOM_SIDE; ++r)
+        {
+            for (size_t c = 0; c < GUITETRAMINOROOM_SIDE; ++c)
+            {
+                const auto AT {r * static_cast<size_t>(GUITETRAMINOROOM_SIDE) + c};
+                guiTetraminoRoom[AT].pixelRect.x = 
+                    guiTetraminoRoom_startX + (static_cast<int>(c) * GUITETRAMINOCELL_SIDE);
+                guiTetraminoRoom[AT].pixelRect.y = 
+                    guiTetraminoRoom_startY + (static_cast<int>(r) * GUITETRAMINOCELL_SIDE);
+                guiTetraminoRoom[AT].pixelRect.w = 
+                    guiTetraminoRoom[AT].pixelRect.h = GUITETRAMINOCELL_SIDE;
+
+            }
+        }
+
+
+    }
+
+    void GUITetramino::ShowCells(SDL_Renderer *r)
+    {
+        constexpr Color cellColor(0xa9u, 0xa9u, 0xa9u);
+        SDL_SetRenderDrawColor(r, cellColor.red, cellColor.green, cellColor.blue,
+            cellColor.alpha);
+
+        for (size_t i = 0; i < GUITETRAMINOARRAY_LENGTH; ++i)
+        {
+            SDL_RenderDrawRect(r, &guiTetraminoRoom[i].pixelRect);
+        }
+
+
+    }
+
+    void GUITetramino::MakeTetraminoForShow(const std::vector<Pixel> &tetramino,
+        TetraminoKind kind)
+    {
+        size_t shift;
+        if (kind == TetraminoKind::Plane)
+            shift = 7UL;
+        else shift = 8UL;
+        std::for_each(guiTetraminoRoom.begin(), guiTetraminoRoom.end(),
+            [](Pixel& pixel){pixel.filled = false;});
+
+
+        for (size_t pixel = 0; pixel < tetramino.size(); ++pixel)
+        {
+            if (tetramino[pixel].filled)
+                guiTetraminoRoom[static_cast<size_t>(tetramino[pixel].row * 
+                    GUITETRAMINOROOM_SIDE + (tetramino[pixel].col - shift))].filled = true;
+        }
+
+
+    }
+    void GUITetramino::ShowNextTetramino(SDL_Renderer *r)
+    {
+        constexpr Color cellColor(0xa9u, 0xa9u, 0xa9u);
+        SDL_SetRenderDrawColor(r, cellColor.red, cellColor.green, cellColor.blue,
+            cellColor.alpha);
+        for (const auto& pixel: guiTetraminoRoom)
+        {
+            if(pixel.filled)  SDL_RenderDrawRect(r, &pixel.pixelRect);
+        }
+    }
 }
-
-

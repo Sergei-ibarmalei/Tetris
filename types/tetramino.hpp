@@ -3,9 +3,8 @@
 //#include <tuple>
 #include <memory>
 #include <array>
-#include <vector>
 #include "../consts/const.hpp"
-#include "pixel.hpp"
+#include "figures.hpp"
 #include "defs.hpp"
 //#include "core.hpp"
 
@@ -14,84 +13,6 @@
 #endif
 
 
-
-constexpr std::vector<tetris::Pixel> createPlaneV()
-{
-    std::vector<tetris::Pixel> v;
-    v.assign({tetris::Pixel(0, 7),       tetris::Pixel(0, 8),       tetris::Pixel(0, 9),       tetris::Pixel(0, 10),
-              tetris::Pixel(1, 7, true), tetris::Pixel(1, 8, true), tetris::Pixel(1, 9, true), tetris::Pixel(1, 10, true),
-              tetris::Pixel(2, 7),       tetris::Pixel(2, 8),       tetris::Pixel(2, 9),       tetris::Pixel(2, 10),
-              tetris::Pixel(3, 7),       tetris::Pixel(3, 8),       tetris::Pixel(3, 9),       tetris::Pixel(3, 10)});
-    return v;
-}
-
-
-constexpr std::vector<tetris::Pixel> createCubeV()
-{
-    std::vector<tetris::Pixel> v;
-    v.assign({tetris::Pixel(0, 8, true), tetris::Pixel(0, 9, true),
-              tetris::Pixel(1, 8, true), tetris::Pixel(1, 9, true),
-              });
-    return v;
-}
-
-
-
-constexpr std::vector<tetris::Pixel> createLV()
-{
-    std::vector<tetris::Pixel> v;
-    v.assign({
-            tetris::Pixel(0, 8, true), tetris::Pixel(0, 9, true), tetris::Pixel(0, 10, true),
-            tetris::Pixel(1, 8, true), tetris::Pixel(1, 9),       tetris::Pixel(1, 10),
-            tetris::Pixel(2, 8),       tetris::Pixel(2, 9),       tetris::Pixel(2, 10)
-    });
-    return v;
-}
-
-
-constexpr std::vector<tetris::Pixel> createGV()
-{
-    std::vector<tetris::Pixel> v;
-    v.assign({
-            tetris::Pixel(0, 8, true), tetris::Pixel(0, 9, true), tetris::Pixel(0, 10, true),
-            tetris::Pixel(1, 8),       tetris::Pixel(1, 9),       tetris::Pixel(1, 10, true),
-            tetris::Pixel(2, 8),       tetris::Pixel(2, 9),       tetris::Pixel(2, 10)
-    });
-    return v;
-}
-
-constexpr std::vector<tetris::Pixel> createRightV()
-{
-    std::vector<tetris::Pixel> v;
-    v.assign({
-            tetris::Pixel(0, 8),       tetris::Pixel(0, 9, true), tetris::Pixel(0, 10, true),
-            tetris::Pixel(1, 8, true), tetris::Pixel(1, 9, true), tetris::Pixel(1, 10),
-            tetris::Pixel(2, 8),       tetris::Pixel(2, 9),       tetris::Pixel(2, 10),
-    });
-    return v;
-}
-
-constexpr std::vector<tetris::Pixel> createLeftV()
-{
-    std::vector<tetris::Pixel> v;
-    v.assign({
-            tetris::Pixel(0, 8, true), tetris::Pixel(0, 9, true), tetris::Pixel(0, 10),
-            tetris::Pixel(1, 8),       tetris::Pixel(1, 9, true), tetris::Pixel(1, 10, true),
-            tetris::Pixel(2, 8),       tetris::Pixel(2, 9),       tetris::Pixel(2, 10),
-    });
-    return v;
-}
-
-constexpr std::vector<tetris::Pixel> createTV()
-{
-    std::vector<tetris::Pixel> v;
-    v.assign({
-            tetris::Pixel(0, 8, true), tetris::Pixel(0, 9, true), tetris::Pixel(0, 10, true),
-            tetris::Pixel(1, 8),       tetris::Pixel(1, 9, true), tetris::Pixel(1, 10),
-            tetris::Pixel(2, 8),       tetris::Pixel(2, 9),       tetris::Pixel(2, 10),
-    });
-    return v;
-}
 
 
 
@@ -222,6 +143,20 @@ namespace tetris
         {
             return std::make_unique<Tetramino>(vStore[random]);
         }
+    };
+
+
+
+    class GUITetramino
+    {
+        private:
+        std::array<Pixel, GUITETRAMINOARRAY_LENGTH> guiTetraminoRoom {};
+
+        public:
+        GUITetramino();
+        void ShowCells(SDL_Renderer* r);
+        void MakeTetraminoForShow(const std::vector<Pixel>& t, TetraminoKind kind);
+        void ShowNextTetramino(SDL_Renderer* r);
     };
 
 }
