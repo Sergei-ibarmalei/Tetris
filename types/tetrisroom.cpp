@@ -11,6 +11,7 @@ namespace tetris
             {
                 room[r * WORKAREA_COL + c].row = static_cast<int>(r);
                 room[r * WORKAREA_COL + c].col = static_cast<int>(c);
+                room[r * WORKAREA_COL + c].filled = false;
                 room[r * WORKAREA_COL + c].RecomputeRectangle();
             }
         }
@@ -108,11 +109,23 @@ namespace tetris
         }
     }
 
+    bool TetrisRoom::CanWeContinue()
+    {
+        const auto firstRow8ColBusy  {room.at(WORKAREA_COL + 8).filled};
+        const auto firstRow9ColBusy  {room.at(WORKAREA_COL + 9).filled};
+        const auto firstRow10ColBusy {room.at(WORKAREA_COL + 10).filled};
+        return !(firstRow8ColBusy || firstRow9ColBusy || firstRow10ColBusy);
+    }
+
 
     #ifdef LOGS
     std::ostream& operator<<(std::ostream& os, const TetrisRoom& tr)
     {
-        os << "list count of filled pixel in row: \n";
+        /*const auto& firstRow8ColBusy  = tr.room.at(WORKAREA_ROW + 8).filled;
+        const auto& firstRow9ColBusy  = tr.room.at(WORKAREA_ROW + 9).filled;
+        const auto& firstRow10ColBusy = tr.room.at(WORKAREA_ROW + 10).filled;*/
+
+        /*os << "list count of filled pixel in row: \n";
         int row = 0;
         for (const auto& c: tr.list_countOfFilledPixelInRow)
         {
@@ -126,8 +139,34 @@ namespace tetris
             {
                 os << "[" << r << "]\n";
             }
+        }*/
+        int in = 0;
+        for (size_t r = 0; r < WORKAREA_ROW; ++r)
+        {
+            os << in++;
+            for (size_t c = 0; c < WORKAREA_COL; ++c)
+            {
+                if (tr.room[r* WORKAREA_COL + c].filled) os << "[*] ";
+                else os << "[ ] ";
+            }
+            os << std::endl;
         }
 
+        /*if (firstRow8ColBusy)
+        {
+            os << "first row 8 busy\n";
+        } 
+        else os << "first row 8 is free\n";
+        if (firstRow9ColBusy)
+        {
+            os << "first row 9 busy\n";
+        } 
+        else os << "first row 9 is free\n";
+        if (firstRow10ColBusy) 
+        {
+            os << "first row 10 busy\n";
+        }
+        else os << "first row 10 is free\n";*/
         return os;
     }
     #endif

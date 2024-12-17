@@ -1,4 +1,6 @@
 #include "core.hpp"
+#include "timer.hpp"
+
 
 
 
@@ -15,7 +17,8 @@ namespace tetris
     static std::pair<TetraminoKind, std::unique_ptr<Tetramino>> currentTetramino;
     static std::unique_ptr<TetrisRoom> tetrisRoom;
     static std::unique_ptr<TRandom> tRandom;
-    static bool quit;
+    static std::unique_ptr<Timer>   tetrisTimer;
+    static bool quitGame;
 
     bool entry()
     {
@@ -26,7 +29,8 @@ namespace tetris
         tetraminoStore = std::make_unique<TetStore>();
         tetrisRoom = std::make_unique<TetrisRoom>();
         tRandom = std::make_unique<TRandom>();
-        quit = false;
+        tetrisTimer = std::make_unique<Timer>();
+        quitGame = false;
 
 
         return true;
@@ -35,10 +39,22 @@ namespace tetris
     void tetgame()
     {
         makeTetramino(tRandom->GetRandom());
-        while(!quit)
+        tetrisTimer->start(1);
+
+        while(tetrisRoom->CanWeContinue() && !quitGame)
         {
-            checkKeys(quit);
+
+            checkKeys(quitGame);
+            if (tetrisTimer->hasElapsed())
+            {
+                currentTetramino.second->Moving(MoveSideDirection::Down,
+                    tetrisRoom->GetRoom());
+                tetrisTimer->reset();
+                tetrisTimer->start(1);
+            }
+
             if (!currentTetramino.second->IsMovable()) fix();
+
             if (!tetrisRoom->List_RowsToDeleteIsEmpty())
             {
                 tetrisRoom->RemoveFilledRows();
@@ -54,7 +70,9 @@ namespace tetris
     void makeTetramino(size_t random)
     {
         currentTetramino.second.release();
+        tetrisTimer->reset();
         currentTetramino.second = tetraminoStore->MakeRandomTetramino(random);
+        tetrisTimer->start(1);
         currentTetramino.first  = currentTetramino.second->Kind();
     }
 
@@ -106,12 +124,12 @@ namespace tetris
                             currentTetramino.second->TurnLeft();
                             break;
                         }
-                        case SDLK_DOWN:
+                        /*case SDLK_DOWN:
                         {
                             currentTetramino.second->Moving(MoveSideDirection::Down,
                                 tetrisRoom->GetRoom());
                             break;
-                        }
+                        }*/
                         case SDLK_LEFT:
                         {
                             currentTetramino.second->Moving(MoveSideDirection::Left,

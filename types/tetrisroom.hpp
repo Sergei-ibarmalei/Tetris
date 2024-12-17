@@ -29,6 +29,7 @@ namespace tetris
         bool RoomIsEmpty() const {return filledRoomSize == 0;}
         bool List_RowsToDeleteIsEmpty() const {return list_rowsToDelete.empty();}
         void RemoveFilledRows();
+        bool CanWeContinue();
 
         #ifdef LOGS
             friend std::ostream& operator<<(std::ostream& os, const TetrisRoom& tr);
