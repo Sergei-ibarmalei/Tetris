@@ -23,8 +23,13 @@ namespace tetris
     {
         for (const auto& pixel: realTetramino)
         {
-            const auto pixelRow = static_cast<size_t>(pixel.row);
-            const auto pixelCol = static_cast<size_t>(pixel.col);
+            auto pixelRow = static_cast<size_t>(pixel.row);
+            if (pixelRow < 0) pixelRow = 0UL;
+            if (pixelRow > WORKAREA_ROW) pixelRow = WORKAREA_ROW;
+            auto pixelCol = static_cast<size_t>(pixel.col);
+            
+            if (pixelCol < 0) pixelCol = 0UL;
+            if (pixelCol > WORKAREA_COL) pixelCol = WORKAREA_COL;
             const auto atPixel  = pixelRow * WORKAREA_COL + pixelCol;
             room[atPixel].filled = pixel.filled;
             room[atPixel].pColor = pixel.pColor;

@@ -1,5 +1,7 @@
+#include <thread>
 #include "core.hpp"
 #include "timer.hpp"
+
 
 
 
@@ -60,6 +62,9 @@ namespace tetris
                 tetrisRoom->RemoveFilledRows();
             }
             renderLoop();
+
+            // rest for CPU:
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     }
 
@@ -93,7 +98,9 @@ namespace tetris
     {
         tetrisRoom->FixTetramino(currentTetramino.second->RealTetramino());
         currentTetramino.second.release();
+        tetrisTimer->reset();
         makeTetramino(tRandom->GetRandom());
+        tetrisTimer->start(1);
     }
 
     void checkKeys(bool& quit)
@@ -124,12 +131,13 @@ namespace tetris
                             currentTetramino.second->TurnLeft();
                             break;
                         }
-                        /*case SDLK_DOWN:
+                        
+                        case SDLK_SPACE: // press SPACE for drop down 
                         {
-                            currentTetramino.second->Moving(MoveSideDirection::Down,
-                                tetrisRoom->GetRoom());
+                            currentTetramino.second->DropDown(tetrisRoom->GetRoom());
+                            fix();
                             break;
-                        }*/
+                        }
                         case SDLK_LEFT:
                         {
                             currentTetramino.second->Moving(MoveSideDirection::Left,

@@ -190,7 +190,29 @@ namespace tetris
         return false;
     }
 
-
+    void Tetramino::DropDown(const std::array<Pixel, WORKAREA_ARRAYLENGTH>& room)
+    {
+        while (movable)
+        {
+           for (const auto& pixel: tetramino)
+            {
+                if (down_checkTetraminoHitFixed(room))
+                {
+                    movable = false; break;
+                }
+                if ((pixel.row + 1) > static_cast<int>(FLOOR))
+                {
+                    movable = false; break;
+                }
+            }
+            if (movable)
+            {
+                for (auto& pixel: sprite) pixel.row += 1;
+                MakeRealTetramino();
+                RecomputeRealTetraminoRects();
+            }
+        }
+    }
 
     void Tetramino::Moving(MoveSideDirection dir, const std::array<Pixel, WORKAREA_ARRAYLENGTH>& room)
     {
@@ -234,6 +256,7 @@ namespace tetris
                 for (auto& pixel: sprite) pixel.col -= 1;
                 break;
             }
+            default: {}
         }
         MakeRealTetramino();
         RecomputeRealTetraminoRects();

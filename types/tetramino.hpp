@@ -132,6 +132,7 @@ namespace tetris
         void TurnLeft();
         void Moving(MoveSideDirection dir, const std::array<Pixel, WORKAREA_ARRAYLENGTH>& room);
         TetraminoKind Kind() const {return kind;}
+        void DropDown(const std::array<Pixel, WORKAREA_ARRAYLENGTH>& room);
         bool IsMovable() const {return movable;}
         const std::array<Pixel, TETRAMINOLENGTH>& RealTetramino() const {
             return tetramino;
