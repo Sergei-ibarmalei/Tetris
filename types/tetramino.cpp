@@ -308,13 +308,8 @@ namespace tetris
 
     }
 
-    void GUITetramino::MakeTetraminoForShow(const std::vector<Pixel> &tetramino,
-        TetraminoKind kind)
+    void GUITetramino::makeTetramino(const std::vector<Pixel>& tetramino, size_t shift)
     {
-        size_t shift;
-        if (kind == TetraminoKind::Plane)
-            shift = 7UL;
-        else shift = 8UL;
         std::for_each(guiTetraminoRoom.begin(), guiTetraminoRoom.end(),
             [](Pixel& pixel){pixel.filled = false;});
 
@@ -328,6 +323,44 @@ namespace tetris
 
 
     }
+
+    void GUITetramino::MakeTetraminoForShow(TetraminoKind kind)
+    {
+        switch (kind)
+        {
+            case TetraminoKind::Plane:
+            {
+                makeTetramino(createPlane(), TETRAMINOSHIFTGUI_PLANE); return;
+            }
+            case TetraminoKind::Cube:
+            {
+                makeTetramino(createCube()); return;
+            }
+            case TetraminoKind::L:
+            {
+                makeTetramino(createL()); return;
+            }
+            case TetraminoKind::G:
+            {
+                makeTetramino(createG()); return;
+            }
+            case TetraminoKind::Right:
+            {
+                makeTetramino(createRight()); return;
+            }
+            case TetraminoKind::Left:
+            {
+                makeTetramino(createLeft()); return;
+            }
+            case TetraminoKind::T:
+            {
+                makeTetramino(createT()); return;
+            }
+            default: {}
+        }
+    }
+
+
     void GUITetramino::ShowNextTetramino(SDL_Renderer *r)
     {
         constexpr Color cellColor(0xa9u, 0xa9u, 0xa9u);

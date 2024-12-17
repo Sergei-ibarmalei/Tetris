@@ -135,10 +135,7 @@ namespace tetris
 
         public:
         TetStore();
-        std::unique_ptr<Tetramino> MakeTetramino(TetraminoKind tkind)
-        {
-            return std::make_unique<Tetramino>(vStore[static_cast<size_t>(tkind)]);
-        }
+        
         std::unique_ptr<Tetramino> MakeRandomTetramino(size_t random)
         {
             return std::make_unique<Tetramino>(vStore[random]);
@@ -151,11 +148,14 @@ namespace tetris
     {
         private:
         std::array<Pixel, GUITETRAMINOARRAY_LENGTH> guiTetraminoRoom {};
+        void makeTetramino(const std::vector<Pixel>& tetramino, 
+            size_t shif = TETRAMINOSHIFTGUI_OTHER);
 
         public:
         GUITetramino();
         void ShowCells(SDL_Renderer* r);
-        void MakeTetraminoForShow(const std::vector<Pixel>& t, TetraminoKind kind);
+        //void MakeTetraminoForShow(const std::vector<Pixel>& t, TetraminoKind kind);
+        void MakeTetraminoForShow(TetraminoKind kind);
         void ShowNextTetramino(SDL_Renderer* r);
     };
 

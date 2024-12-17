@@ -8,7 +8,8 @@
 
 namespace tetris
 {
-    void makeTetramino(size_t random);
+    void initComplect();
+    void reinitComplect();
     void fix();
     void checkKeys(bool& quit);
     void renderLoop();
@@ -16,12 +17,12 @@ namespace tetris
     static std::unique_ptr<SDL> sdl;
     static std::unique_ptr<Environment> environment;
     static std::unique_ptr<TetStore> tetraminoStore;
-    static std::pair<TetraminoKind, std::unique_ptr<Tetramino>> currentTetramino;
     static std::unique_ptr<TetrisRoom> tetrisRoom;
     static std::unique_ptr<TRandom> tRandom;
     static std::unique_ptr<Timer>   tetrisTimer;
     static std::unique_ptr<Timer>   freezeBeforeDeleteTimer;
     static std::unique_ptr<GUITetramino> guiTetramino;
+    static std::pair<std::pair<std::unique_ptr<Tetramino>, TetraminoKind>, TetraminoKind> tetraminoComplect;
     static bool quitGame;
     static int  freezeDuration; // duration in milliseconds
     static int  freezeBeforeDeleteDuration;
@@ -38,7 +39,6 @@ namespace tetris
         tetrisTimer = std::make_unique<Timer>();
         freezeBeforeDeleteTimer = std::make_unique<Timer>();
         guiTetramino = std::make_unique<GUITetramino>();
-        guiTetramino->MakeTetraminoForShow(createG(), TetraminoKind::G);
         freezeDuration = 1000;
         freezeBeforeDeleteDuration = 200;
         quitGame = false;
@@ -49,8 +49,7 @@ namespace tetris
 
     void tetgame()
     {
-        makeTetramino(tRandom->GetRandom());
-        tetrisTimer->start(freezeDuration);
+        initComplect();
 
         while(tetrisRoom->CanWeContinue() && !quitGame)
         {
@@ -58,13 +57,13 @@ namespace tetris
             checkKeys(quitGame);
             if (tetrisTimer->hasElapsed())
             {
-                currentTetramino.second->Moving(MoveSideDirection::Down,
+                tetraminoComplect.first.first->Moving(MoveSideDirection::Down,
                     tetrisRoom->GetRoom());
                 tetrisTimer->reset();
                 tetrisTimer->start(freezeDuration);
             }
 
-            if (!currentTetramino.second->IsMovable()) fix();
+            if (!tetraminoComplect.first.first->IsMovable()) fix ();
 
             if (!tetrisRoom->List_RowsToDeleteIsEmpty())
             {
@@ -87,16 +86,30 @@ namespace tetris
     }
 
 
-
-
-
-    void makeTetramino(size_t random)
+    void initComplect()
     {
-        currentTetramino.second.release();
-        tetrisTimer->reset();
-        currentTetramino.second = tetraminoStore->MakeRandomTetramino(random);
+        auto randomIndex = static_cast<size_t>(tRandom->GetRandom());
+        auto nextRandomIndex = static_cast<size_t>(tRandom->GetRandom());
+        tetraminoComplect.first.first = tetraminoStore->MakeRandomTetramino(randomIndex);
+        tetraminoComplect.first.second = static_cast<TetraminoKind>(randomIndex);
+        tetraminoComplect.second = static_cast<TetraminoKind>(nextRandomIndex);
+        guiTetramino->MakeTetraminoForShow(tetraminoComplect.second);
         tetrisTimer->start(freezeDuration);
-        currentTetramino.first  = currentTetramino.second->Kind();
+    }
+
+    // reinitiate complect after real tetramino is fixed:
+    void reinitComplect()
+    {
+        auto nextRandomIndex = static_cast<size_t>(tRandom->GetRandom());
+        tetraminoComplect.first.first.release();
+        tetrisTimer->reset();
+        tetraminoComplect.first.first = tetraminoStore->MakeRandomTetramino(
+            static_cast<size_t>(tetraminoComplect.second)
+        );
+        tetraminoComplect.first.second = tetraminoComplect.second;
+        tetraminoComplect.second = static_cast<TetraminoKind>(nextRandomIndex);
+        guiTetramino->MakeTetraminoForShow(tetraminoComplect.second);
+        tetrisTimer->start(freezeDuration);
     }
 
 
@@ -105,7 +118,7 @@ namespace tetris
             SDL_SetRenderDrawColor(sdl->Render(), 0u, 0u, 0u, 0xffu);
             SDL_RenderClear(sdl->Render());
             environment->ShowEnv(sdl);
-            currentTetramino.second->Show(sdl->Render());
+            tetraminoComplect.first.first->Show(sdl->Render());
             if (!tetrisRoom->RoomIsEmpty()) tetrisRoom->ShowRoom(sdl->Render());
             guiTetramino->ShowNextTetramino(sdl->Render());
             SDL_RenderPresent(sdl->Render());       
@@ -115,11 +128,8 @@ namespace tetris
 
     void fix()
     {
-        tetrisRoom->FixTetramino(currentTetramino.second->RealTetramino());
-        currentTetramino.second.release();
-        tetrisTimer->reset();
-        makeTetramino(tRandom->GetRandom());
-        tetrisTimer->start(freezeDuration);
+        tetrisRoom->FixTetramino(tetraminoComplect.first.first->RealTetramino());
+        reinitComplect();
     }
 
     void checkKeys(bool& quit)
@@ -140,39 +150,39 @@ namespace tetris
                         #endif
                         case SDLK_d:
                         {
-                            if (currentTetramino.first == TetraminoKind::Cube) break;
-                            currentTetramino.second->TurnRight();
+                            if (tetraminoComplect.first.second == TetraminoKind::Cube) break;
+                            tetraminoComplect.first.first->TurnRight();
                             break;
                         }
                         case SDLK_a:
                         {
-                            if (currentTetramino.first == TetraminoKind::Cube) break;
-                            currentTetramino.second->TurnLeft();
+                            if (tetraminoComplect.first.second == TetraminoKind::Cube) break;
+                            tetraminoComplect.first.first->TurnLeft();
                             break;
                         }
                         
                         case SDLK_SPACE: // press SPACE for drop down 
                         {
-                            currentTetramino.second->DropDown(tetrisRoom->GetRoom());
+                            tetraminoComplect.first.first->DropDown(tetrisRoom->GetRoom());
                             fix();
                             break;
                         }
                         case SDLK_LEFT:
                         {
-                            currentTetramino.second->Moving(MoveSideDirection::Left,
+                            tetraminoComplect.first.first->Moving(MoveSideDirection::Left,
                                 tetrisRoom->GetRoom());
                             break;
                         }
                         case SDLK_RIGHT:
                         {
-                            currentTetramino.second->Moving(MoveSideDirection::Right,
+                            tetraminoComplect.first.first->Moving(MoveSideDirection::Right,
                                 tetrisRoom->GetRoom());
                             break;
                         }
                         case SDLK_DOWN:
                         {
-                            currentTetramino.second->Moving(MoveSideDirection::Down,
-                                tetrisRoom->GetRoom());;
+                            tetraminoComplect.first.first->Moving(MoveSideDirection::Down,
+                                tetrisRoom->GetRoom());
                             break;
                         }
                         default: {}
@@ -180,9 +190,5 @@ namespace tetris
                 }
             }
     }
-
-
-
-
 
 }
