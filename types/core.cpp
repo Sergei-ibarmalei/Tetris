@@ -51,7 +51,7 @@ namespace tetris
     {
         initComplect();
 
-        while(tetrisRoom->CanWeContinue() && !quitGame)
+        while (!quitGame)
         {
 
             checkKeys(quitGame);
@@ -64,6 +64,9 @@ namespace tetris
             }
 
             if (!tetraminoComplect.first.first->IsMovable()) fix ();
+
+            // if there is no space for new tetramino, exit:
+            if (tetrisRoom->CanWeContinue() == false) return;
 
             if (!tetrisRoom->List_RowsToDeleteIsEmpty())
             {
