@@ -46,12 +46,11 @@ namespace tetris
         {
             row = r; col = c; filled = f;
         }
-
         void SetColor(const Color& c) {
             pColor = c;
         }
         void RecomputeRectangle();
-        bool operator==(const Pixel& other) const
+        /*bool operator==(const Pixel& other) const
         {
             return this->row == other.row &&
                 this->col == other.col;
@@ -67,12 +66,19 @@ namespace tetris
         bool operator>(const Pixel& other) const 
         {
             return this->col > other.col;
-        }
+        }*/
 
 
         #ifdef LOGS
             friend std::ostream& operator<<(std::ostream& os, const Pixel& pixel);
         #endif
+    };
+
+    struct SimplePixel
+    {
+        SDL_Rect pRect {};
+        bool     filled {false};
+        SimplePixel(bool f = false) {filled =f;}
     };
 
 

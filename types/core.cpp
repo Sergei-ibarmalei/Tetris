@@ -120,10 +120,11 @@ namespace tetris
     {
             SDL_SetRenderDrawColor(sdl->Render(), 0u, 0u, 0u, 0xffu);
             SDL_RenderClear(sdl->Render());
-            environment->ShowEnv(sdl);
+            environment->ShowEnv(sdl->Render());
             tetraminoComplect.first.first->Show(sdl->Render());
             if (!tetrisRoom->RoomIsEmpty()) tetrisRoom->ShowRoom(sdl->Render());
             guiTetramino->ShowNextTetramino(sdl->Render());
+            guiTetramino->ShowScoreTable(sdl->Render());
             SDL_RenderPresent(sdl->Render());       
     }
 

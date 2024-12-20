@@ -78,4 +78,23 @@ constexpr std::vector<tetris::Pixel> createT()
     });
     return v;
 }
+/*#define pix tetris::Pixel
+
+constexpr std::vector<tetris::Pixel> createSymbolS()
+{
+    std::vector<tetris::Pixel> a;
+    a.assign({
+        pix(0, 0),       pix(0, 1, true), pix(0, 2, true), pix(0, 3, true), pix(0, 4, true),
+        pix(1, 0, true), pix(1, 1, true), pix(1, 2),       pix(1, 3),       pix(1, 4),
+        pix(2, 0, true), pix(2, 1, true), pix(2, 2),       pix(2, 3),       pix(2, 4),
+        pix(3, 0, true), pix(3, 1, true), pix(3, 2, true), pix(3, 3, true), pix(3, 4),
+        pix(4, 0),       pix(4, 1),       pix(4, 2),       pix(4, 3, true), pix(4, 4, true),
+        pix(5, 0),       pix(5, 1),       pix(5, 2),       pix(5, 3, true), pix(5, 4, true),
+        pix(6, 0),       pix(6, 1),       pix(6, 2),       pix(6, 3, true), pix(6, 4, true),
+        pix(7, 0, true), pix(7, 1, true), pix(7, 2, true), pix(7, 3, true), pix(7, 4)
+    });
+    return a;
+}
+#undef pix*/
+
 

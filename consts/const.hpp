@@ -80,10 +80,34 @@ constexpr size_t TETRAMINOSHIFTGUI_PLANE {7};
 constexpr size_t TETRAMINOSHIFTGUI_OTHER {8};
 
 
-constexpr size_t LITTLESYMBOLSPRITE_W {5};
-constexpr size_t LITTLESYMBOLSPRITE_H {8};
-constexpr size_t LITTLESYMBOLSPRITE_LENGTH {LITTLESYMBOLSPRITE_W * LITTLESYMBOLSPRITE_H};
-constexpr int    LITTLESYMBOL_CELLSIDE {25};
+constexpr size_t SYMBOL_S {0};
+constexpr size_t SYMBOL_C {1};
+constexpr size_t SYMBOL_O {2};
+constexpr size_t SYMBOL_R {3};
+constexpr size_t SYMBOL_E {4};
+
+constexpr size_t SCORETABLE_ARRAYLENGTH {5};
+constexpr size_t SCORESYMBOL_CELL_IN_WIDTH {5};
+constexpr size_t SCORESYMBOL_CELL_IN_HEIGHT {8};
+constexpr int SCORESYMBOL_CELLSIDE {15};
+constexpr int    SCORESYMBOL_WIDTH {static_cast<int>(SCORESYMBOL_CELL_IN_WIDTH) *
+    SCORESYMBOL_CELLSIDE};
+constexpr int SCORESYMBOLSPACE {5};
+
+
+
+constexpr int S_X {RIGHTWALL_X + BORDER_WIDTH + 2 * SCORESYMBOL_CELLSIDE};
+constexpr int S_Y {3 * SCORESYMBOL_CELLSIDE};
+constexpr int C_X {S_X + SCORESYMBOLSPACE + SCORESYMBOL_WIDTH};
+constexpr int C_Y {S_Y};
+constexpr int O_X {C_X + SCORESYMBOLSPACE + SCORESYMBOL_WIDTH};
+constexpr int O_Y {C_Y};
+constexpr int R_X {O_X + SCORESYMBOLSPACE + SCORESYMBOL_WIDTH};
+constexpr int R_Y {O_Y};
+constexpr int E_X {R_X + SCORESYMBOLSPACE + SCORESYMBOL_WIDTH};
+constexpr int E_Y {R_Y};
+
+
 
 
 

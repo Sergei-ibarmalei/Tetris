@@ -270,6 +270,7 @@ namespace tetris
 
     GUITetramino::GUITetramino()
     {
+        initScoreTable();
 
         constexpr int guiTetraminoRoom_startX {
             (LEFTWALL_X  - GUITETRAMINOROOM_WIDTH) / 2
@@ -295,19 +296,7 @@ namespace tetris
 
     }
 
-    /*void GUITetramino::ShowCells(SDL_Renderer *r)
-    {
-        constexpr Color cellColor(0xa9u, 0xa9u, 0xa9u);
-        SDL_SetRenderDrawColor(r, cellColor.red, cellColor.green, cellColor.blue,
-            cellColor.alpha);
 
-        for (size_t i = 0; i < GUITETRAMINOARRAY_LENGTH; ++i)
-        {
-            SDL_RenderDrawRect(r, &guiTetraminoRoom[i].pixelRect);
-        }
-
-
-    }*/
 
     void GUITetramino::makeTetramino(const std::vector<Pixel>& tetramino, size_t shift)
     {
@@ -323,6 +312,60 @@ namespace tetris
         }
 
 
+    }
+
+    void GUITetramino::initScoreTable()
+    {
+        for (const auto& i: createSS())
+        {
+            i ? scoreTable[SYMBOL_S].emplace_back(SimplePixel(true)) :
+                scoreTable[SYMBOL_S].emplace_back(SimplePixel());
+        }
+        setCoords({S_X, S_Y}, SYMBOL_S);
+
+        for (const auto& i: createSC())
+        {
+            i ? scoreTable[SYMBOL_C].emplace_back(SimplePixel(true)) :
+                scoreTable[SYMBOL_C].emplace_back(SimplePixel());
+        }
+        setCoords({C_X, C_Y}, SYMBOL_C);
+
+        for (const auto& i: createSO())
+        {
+            i ? scoreTable[SYMBOL_O].emplace_back(SimplePixel(true)) :
+                scoreTable[SYMBOL_O].emplace_back(SimplePixel());
+        }
+        setCoords({O_X, O_Y}, SYMBOL_O);
+
+        for (const auto& i: createSR())
+        {
+            i ? scoreTable[SYMBOL_R].emplace_back(SimplePixel(true)) :
+                scoreTable[SYMBOL_R].emplace_back(SimplePixel());
+        }
+        setCoords({R_X, R_Y}, SYMBOL_R);
+        for (const auto& i: createSE())
+        {
+            i ? scoreTable[SYMBOL_E].emplace_back(SimplePixel(true)) :
+                scoreTable[SYMBOL_E].emplace_back(SimplePixel());
+        }
+        setCoords({E_X, E_Y}, SYMBOL_E);
+    }
+
+    void GUITetramino::setCoords(const SDL_Point &startPoint, const size_t symbolNomber)
+    {
+        for (size_t r = 0; r < SCORESYMBOL_CELL_IN_HEIGHT; ++r)
+        {
+            for (size_t c = 0; c < SCORESYMBOL_CELL_IN_WIDTH; ++c)
+            {
+                const auto AT {r * SCORESYMBOL_CELL_IN_WIDTH + c};
+                scoreTable[symbolNomber][AT].pRect.x =
+                    startPoint.x + static_cast<int>(c) * SCORESYMBOL_CELLSIDE;
+                scoreTable[symbolNomber][AT].pRect.y = 
+                    startPoint.y + static_cast<int>(r) * SCORESYMBOL_CELLSIDE;
+                scoreTable[symbolNomber][AT].pRect.w =
+                    scoreTable[symbolNomber][AT].pRect.h = SCORESYMBOL_CELLSIDE;
+            }
+        }
     }
 
     void GUITetramino::MakeTetraminoForShow(TetraminoKind kind)
@@ -364,12 +407,22 @@ namespace tetris
 
     void GUITetramino::ShowNextTetramino(SDL_Renderer *r)
     {
-        constexpr Color cellColor(0xa9u, 0xa9u, 0xa9u);
-        SDL_SetRenderDrawColor(r, cellColor.red, cellColor.green, cellColor.blue,
-            cellColor.alpha);
+        //constexpr Color cellColor(0xa9u, 0xa9u, 0xa9u);
+        SDL_SetRenderDrawColor(r, beige.red, beige.green, beige.blue,
+            beige.alpha);
         for (const auto& pixel: guiTetraminoRoom)
         {
             if(pixel.filled)  SDL_RenderDrawRect(r, &pixel.pixelRect);
+        }
+    }
+
+    void GUITetramino::ShowScoreTable(SDL_Renderer *r)
+    {
+        SDL_SetRenderDrawColor(r, beige.red, beige.green, beige.blue, beige.alpha);
+        for (const auto& v: scoreTable)
+        {
+            for (const auto& p: v)
+                if (p.filled) SDL_RenderFillRect(r, &p.pRect);
         }
     }
 }

@@ -6,7 +6,7 @@
 #include "../consts/const.hpp"
 #include "figures.hpp"
 #include "defs.hpp"
-//#include "core.hpp"
+#include "text.hpp"
 
 #ifdef LOGS
     #include <iostream>
@@ -25,7 +25,8 @@ namespace tetris
     constexpr Color limegreen(0x32u, 0xCDu, 0x32u, 0xFFu);
     constexpr Color darkcyan(0u, 0x8Bu, 0x8Bu, 0xFFu);
     constexpr Color cornflowerblue(0x64u, 0x95u, 0xEDu, 0xFFu);
-    constexpr Color magenta(0xFFu, 0u, 0xFFu, 0xFF);
+    constexpr Color magenta(0xFFu, 0u, 0xFFu, 0xFFu);
+    constexpr Color beige(0xf5u, 0xf5u, 0xdcu, 0xffu);
 
     class Tetramino
     {
@@ -147,15 +148,22 @@ namespace tetris
     class GUITetramino
     {
         private:
+        std::array<std::vector<SimplePixel>, SCORETABLE_ARRAYLENGTH> scoreTable;
         std::array<Pixel, GUITETRAMINOARRAY_LENGTH> guiTetraminoRoom {};
         void makeTetramino(const std::vector<Pixel>& tetramino, 
             size_t shif = TETRAMINOSHIFTGUI_OTHER);
+        void initScoreTable();
+        void setCoords(const SDL_Point& startPoint, const size_t symbolNomber);
 
         public:
         GUITetramino();
         void MakeTetraminoForShow(TetraminoKind kind);
         void ShowNextTetramino(SDL_Renderer* r);
+        void ShowScoreTable(SDL_Renderer* r);
     };
+
+    
+
 
 }
 

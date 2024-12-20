@@ -33,19 +33,18 @@ namespace tetris
         }
     }
 
-    void Environment::ShowEnv(std::unique_ptr<tetris::SDL>& sdl)
+    void Environment::ShowEnv(SDL_Renderer* r)
     {
-        auto render = sdl->Render();
 
         // Draw environment points
-        SDL_SetRenderDrawColor(render, GREY);
-        for (const auto p: *envPoints) SDL_RenderDrawPoint(render, p.x, p.y);   
+        SDL_SetRenderDrawColor(r, GREY);
+        for (const auto p: *envPoints) SDL_RenderDrawPoint(r, p.x, p.y);   
 
         // Draw walls and floor
-        SDL_SetRenderDrawColor(render, RED);
-        SDL_RenderFillRect(render, &leftBorder);
-        SDL_RenderFillRect(render, &rightBorder);
-        SDL_RenderFillRect(render, &floor);
+        SDL_SetRenderDrawColor(r, RED);
+        SDL_RenderFillRect(r, &leftBorder);
+        SDL_RenderFillRect(r, &rightBorder);
+        SDL_RenderFillRect(r, &floor);
 
 
     }

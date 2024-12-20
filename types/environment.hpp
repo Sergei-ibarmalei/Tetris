@@ -23,7 +23,7 @@ namespace tetris
         Environment(const Environment&) = delete;
         Environment(Environment&&) = delete;
         Environment& operator=(const Environment&) = delete;
-        void ShowEnv(std::unique_ptr<tetris::SDL>& sdl);
+        void ShowEnv(SDL_Renderer* r);
         SDL_Point GetStart() const {return {LEFTWALL_X, LEFTWALL_Y};}
 
     };
